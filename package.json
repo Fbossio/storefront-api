@@ -10,7 +10,8 @@
     "tsc": "tsc",
     "lint": "eslint './**/*.ts'",
     "lint:fix": "eslint './**/*.ts' --fix",
-    "format": "prettier --write './**/*.ts'"
+    "format": "prettier --write './**/*.ts'",
+    "prepare": "husky install"
   },
   "author": "Udacity",
   "license": "ISC",
@@ -33,9 +34,11 @@
     "eslint-plugin-import": "^2.28.1",
     "eslint-plugin-prettier": "^5.0.0",
     "git-commit-msg-linter": "^5.0.4",
+    "husky": "^8.0.3",
     "jasmine": "^3.6.4",
     "jasmine-spec-reporter": "^6.0.0",
     "jasmine-ts": "^0.3.0",
+    "lint-staged": "^14.0.1",
     "prettier": "^3.0.3",
     "ts-node": "^9.1.1",
     "tsc-watch": "^4.2.9"
