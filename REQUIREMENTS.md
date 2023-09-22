@@ -40,3 +40,51 @@ These are the notes from a meeting with the frontend developer that describe wha
 - user_id
 - status of order (active or complete)
 
+## RESTful Routes
+### Products
+
+```bash
+# Get a list of all products
+GET /products
+```
+```bash
+# Get the detail of a product
+GET /products/:id
+```
+
+```bash
+# Create a product
+POST /products
+```
+
+### Users
+
+```bash
+# Get a list of all users
+# Token required
+GET /users
+```
+
+```bash
+# Get the details of a user
+# Token required
+GET /products/:id
+```
+
+```bash
+# Create a user
+POST /products
+```
+
+### Orders
+
+```bash
+# Create a 
+# Get current order from a user
+GET /orders/:user_id
+```
+
+## Database Design
+
+![Database Design](./assets/storefront_DB.svg)
+
