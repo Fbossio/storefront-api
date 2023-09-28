@@ -1,8 +1,13 @@
 import dotenv from 'dotenv';
 import { Pool } from 'pg';
 
+// const envFile = process.env.NODE_ENV === 'test' ? '.env.test' : '.env';
+
+// dotenv.config({ path: envFile });
 dotenv.config();
+
 const { NODE_ENV } = process.env;
+
 let dbConfig;
 
 switch (NODE_ENV) {
@@ -36,7 +41,6 @@ switch (NODE_ENV) {
     };
     break;
 }
-
 const client = new Pool(dbConfig);
 
 export default client;

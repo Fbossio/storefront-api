@@ -1,3 +1,7 @@
+const dotenv = require('dotenv');
+
+dotenv.config();
+
 const {
   POSTGRES_HOST,
   POSTGRES_PORT,
@@ -12,14 +16,14 @@ const {
   TEST_POSTGRES_PASSWORD,
 } = process.env;
 
-module.exports = {
+const configurations = {
   dev: {
     driver: 'pg',
     host: POSTGRES_HOST,
     port: parseInt(POSTGRES_PORT, 10),
     database: POSTGRES_DB,
     user: POSTGRES_USER,
-    password: POSTGRES_PASSWORD,
+    password: POSTGRES_PASSWORD
   },
   test: {
     driver: 'pg',
@@ -27,6 +31,13 @@ module.exports = {
     port: parseInt(TEST_POSTGRES_PORT, 10),
     database: TEST_POSTGRES_DB,
     user: TEST_POSTGRES_USER,
-    password: TEST_POSTGRES_PASSWORD,
-  },
+    password: TEST_POSTGRES_PASSWORD
+  }
 };
+
+const env = process.env.NODE_ENV || 'dev';
+
+console.log(`NODE_ENV is set to ${env}.`);
+
+
+module.exports = configurations;
