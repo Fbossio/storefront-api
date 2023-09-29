@@ -11,7 +11,7 @@
     },
     "test": {
       "driver": "pg",
-      "host": {"ENV": "TEST_POSTGRES_HOST_DOCKER"},
+      "host": {"ENV": "TEST_POSTGRES_HOST"},
       "port": {"ENV": "TEST_POSTGRES_PORT"},
       "database": {"ENV": "TEST_POSTGRES_DB"},
       "user": {"ENV": "TEST_POSTGRES_USER"},
