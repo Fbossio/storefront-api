@@ -3,19 +3,14 @@
   "version": "0.1.0",
   "description": "",
   "main": "server.ts",
-  "scripts": {
-    "docker-dev:start": "docker compose --env-file .env up db_dev -d",
-    "docker-test:start": "NODE_ENV=test docker compose -f docker-compose.test.yml --env-file .env up -d",
-    "docker-test:stop": "NODE_ENV=test docker compose -f ./docker-compose.test.yml --env-file .env stop",
-    "docker-test:down": "NODE_ENV=test docker compose -f ./docker-compose.test.yml --env-file .env down",
+  "scripts": {    
     "prestart": "npm run migrate-dev:up",
-    "start": "NODE_ENV=dev ts-node src/server.ts",
+    "start": "NODE_ENV=dev nodemon --exec ts-node src/server.ts",    
     "poststart": "echo 'do after start'",
     "watch": "tsc-watch --esModuleInterop src/server.ts --outDir ./dist --onSuccess \"node ./dist/server.js\"",
-    "pretest": "npm run migrate-test:up",
+    "pretest": "npm run migrate-test:up > /dev/null 2>&1",
     "test": "NODE_ENV=test jasmine-ts",
-    "posttest": "npm run migrate-test:down",
-    "jasmine": "jasmine-ts",
+    "posttest": "npm run migrate-test:down > /dev/null 2>&1",    
     "tsc": "tsc",
     "build": "tsc && cp database.js dist/",
     "prod": "npm run build && node dist/server.js",
@@ -38,8 +33,7 @@
     "db-migrate-pg": "^1.5.2",
     "dotenv": "^16.3.1",
     "express": "^4.17.1",
-    "pg": "^8.5.1",
-    "sleep": "^6.3.0"
+    "pg": "^8.5.1"
   },
   "devDependencies": {
     "@types/express": "^4.17.9",
@@ -59,6 +53,7 @@
     "jasmine-spec-reporter": "^6.0.0",
     "jasmine-ts": "^0.3.0",
     "lint-staged": "^14.0.1",
+    "nodemon": "^3.0.1",
     "prettier": "^3.0.3",
     "ts-node": "^9.1.1",
     "tsc-watch": "^4.2.9",

@@ -1,15 +1,6 @@
 version: '3.9'
 
 services:
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile.dev
-    volumes:
-      - .:/app
-      - /app/node_modules
-    ports:
-      - 3000:3000
   db_dev:
     image: postgres
     env_file:
@@ -22,6 +13,5 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - 'db_dev:/var/lib/postgresql/data'
-
 volumes:
   db_dev:

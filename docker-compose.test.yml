@@ -1,17 +1,6 @@
 version: '3.9'
 
 services:
-  app-test:
-    depends_on:
-      - database-test
-    build:
-      context: .
-      dockerfile: Dockerfile.test
-    volumes:
-      - .:/app-test
-      - /app-test/node_modules
-    ports:
-      - 3000:3000
 
   database-test:
     image: postgres
