@@ -9,6 +9,9 @@ const restartTable = async () => {
 };
 
 describe('Product Model', () => {
+  beforeEach(async () => {
+    await restartTable();
+  });
   it('should have an index method', () => {
     expect(store.index).toBeDefined();
   });
@@ -38,8 +41,7 @@ describe('Product Model', () => {
     expect(result.name).toBe('test');
     expect(parseInt(result.price as unknown as string)).toBe(100);
     expect(result.category).toBe('sports');
-
-    await restartTable();
+    
   });
   it('method show should return the correct product', async () => {
     await store.create({
@@ -52,8 +54,7 @@ describe('Product Model', () => {
     expect(result.name).toBe('test');
     expect(parseInt(result.price as unknown as string)).toBe(100);
     expect(result.category).toBe('sports');
-
-    await restartTable();
+    
   });
   it('method delete should remove the product', async () => {
     await store.create({
@@ -64,8 +65,7 @@ describe('Product Model', () => {
     await store.delete('1');
     const result = await store.index();
     expect(result).toEqual([]);
-
-    await restartTable();
+    
   });
   it('method update should update the product', async () => {
     await store.create({
@@ -83,8 +83,7 @@ describe('Product Model', () => {
     expect(result.name).toBe('test2');
     expect(parseInt(result.price as unknown as string)).toBe(200);
     expect(result.category).toBe('sports');
-
-    await restartTable();
+    
   });
   it('method show should throw an error if the product does not exist', async () => {
     try {
