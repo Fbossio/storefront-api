@@ -1,6 +1,7 @@
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import express, { Request, Response } from 'express';
+import productRoutes from './handlers/product';
 const app: express.Application = express();
 const address: string = '0.0.0.0:3000';
 
@@ -11,6 +12,10 @@ app.get('/', function (req: Request, res: Response) {
   res.send('Hello World!');
 });
 
-app.listen(3000, function () {
+productRoutes(app);
+
+const server = app.listen(3000, function () {
   console.log(`starting app on: ${address}`);
 });
+
+export default server;
