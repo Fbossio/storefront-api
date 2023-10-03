@@ -65,7 +65,7 @@ describe('Product handler', () => {
     it('should throw an error if the product is not found', async () => {
         const response = await request(server).delete('/products/1');
         expect(response.status).toEqual(400);
-        expect(response.body).toEqual({ error: 'Product not found' })
+        expect(response.body).toEqual({ error: 'Product not deleted' })
     });
     it ('should update a product', async () => {
         const createdProduct = await request(server)
