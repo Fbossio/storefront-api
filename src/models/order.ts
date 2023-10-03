@@ -3,7 +3,7 @@ import client from '../config/database';
 export interface IOrder {
   id?: number;
   status: string;
-  user_id: number;
+  user_id?: number;
 }
 
 export interface IUpdateOrder {

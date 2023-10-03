@@ -1,6 +1,7 @@
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import express, { Request, Response } from 'express';
+import orderRoutes from './handlers/order';
 import productRoutes from './handlers/product';
 import userRoutes from './handlers/user';
 const app: express.Application = express();
@@ -15,6 +16,7 @@ app.get('/', function (req: Request, res: Response) {
 
 productRoutes(app);
 userRoutes(app);
+orderRoutes(app);
 
 const server = app.listen(3000, function () {
   console.log(`starting app on: ${address}`);

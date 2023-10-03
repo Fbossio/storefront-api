@@ -1,10 +1,8 @@
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Response } from 'express';
 import jwt from 'jsonwebtoken';
-interface AuthRequest extends Request {
-  user?: unknown;
-}
+import AppRequest from '../types/app';
 
-const verifyToken = (req: AuthRequest, res: Response, next: NextFunction) => {
+const verifyToken = (req: AppRequest, res: Response, next: NextFunction) => {
   const token = req.headers.authorization;
 
   if (!token) {
