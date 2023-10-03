@@ -109,10 +109,9 @@ describe('Product handler', () => {
                 category: 'test'
             });
         const response = await request(server)
-            .put('/products')
+            .put(`/products/${createdProduct.body.id}`)
             .set('Authorization', token)
-            .send({
-                id: createdProduct.body.id,
+            .send({                
                 name: 'test2',
                 price: 2,                
             });
@@ -122,10 +121,9 @@ describe('Product handler', () => {
     });
     it('should throw an error if the product is not updated', async () => {
         const response = await request(server)
-            .put('/products')
+            .put('/products/1')
             .set('Authorization', token)
-            .send({
-                id: 1,
+            .send({                
                 name: 'test2',
                 price: 2,                
             });

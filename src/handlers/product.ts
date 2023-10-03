@@ -46,8 +46,10 @@ const destroy = async (req: Request, res: Response) => {
 };
 
 const update = async (req: Request, res: Response) => {
+  const id = req.params.id;
   const product = {
     ...req.body,
+    id,
   };
   const updated = await store.update(product as unknown as IUpdateProduct);
   if (!updated) {
@@ -62,7 +64,7 @@ const productRoutes = (app: express.Application) => {
   app.get('/products/:id', show);
   app.post('/products', verifyToken, create);
   app.delete('/products/:id', verifyToken, destroy);
-  app.put('/products', verifyToken, update);
+  app.put('/products/:id', verifyToken, update);
 };
 
 export default productRoutes;
