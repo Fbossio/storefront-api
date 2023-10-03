@@ -48,8 +48,10 @@ const destroy = async (req: Request, res: Response) => {
 };
 
 const update = async (req: Request, res: Response) => {
+  const id = req.params.id;
   const order = {
     ...req.body,
+    id,
   };
   const updated = await store.update(order as unknown as IUpdateOrder);
   if (!updated) {

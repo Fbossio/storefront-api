@@ -105,8 +105,7 @@ describe ('Order handler', () => {
         const response = await request(server)
             .put(`/orders/${createdOrder.body.id}`)
             .set('Authorization', token)
-            .send({
-                id: createdOrder.body.id,
+            .send({                
                 status: 'completed',
             });
         expect(response.status).toEqual(200);
