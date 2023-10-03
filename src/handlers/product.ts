@@ -1,4 +1,5 @@
 import express, { Request, Response } from 'express';
+import verifyToken from '../middleware/auth';
 import { IProduct, IUpdateProduct, ProductStore } from '../models/product';
 
 const store = new ProductStore();
@@ -59,9 +60,9 @@ const update = async (req: Request, res: Response) => {
 const productRoutes = (app: express.Application) => {
   app.get('/products', index);
   app.get('/products/:id', show);
-  app.post('/products', create);
-  app.delete('/products/:id', destroy);
-  app.put('/products', update);
+  app.post('/products', verifyToken, create);
+  app.delete('/products/:id', verifyToken, destroy);
+  app.put('/products', verifyToken, update);
 };
 
 export default productRoutes;
