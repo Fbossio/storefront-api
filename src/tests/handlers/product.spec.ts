@@ -130,4 +130,9 @@ describe('Product handler', () => {
         expect(response.status).toEqual(400);
         expect(response.body).toEqual({ error: 'Product not updated' })
     });
+    it('should return a list of top products', async () => {
+        const response = await request(server).get('/top_products');
+        expect(response.status).toEqual(200);
+        expect(response.body.length).toEqual(0);
+    });
 })

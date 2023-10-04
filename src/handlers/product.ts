@@ -59,12 +59,22 @@ const update = async (req: Request, res: Response) => {
   res.json(updated);
 };
 
+const topProducts = async (_req: Request, res: Response) => {
+  const products = await store.topProducts();
+  if (!products) {
+    res.status(400).json({ error: 'Products not found' });
+    return;
+  }
+  res.json(products);
+};
+
 const productRoutes = (app: express.Application) => {
   app.get('/products', index);
   app.get('/products/:id', show);
   app.post('/products', verifyToken, create);
   app.delete('/products/:id', verifyToken, destroy);
   app.put('/products/:id', verifyToken, update);
+  app.get('/top_products', topProducts);
 };
 
 export default productRoutes;

@@ -107,4 +107,25 @@ export class ProductStore {
       throw new Error(`Could not update product ${p.id}. Error: ${error}`);
     }
   }
+
+  async topProducts(limit: number = 5): Promise<IProduct[]> {
+    try {
+      const conn = await client.connect();
+
+      const sql = `
+        SELECT p.id, p.name, p.price, p.category, COUNT(od.product_id) as order_count
+        FROM products p
+        JOIN order_details od ON p.id = od.product_id
+        GROUP BY p.id
+        ORDER BY order_count DESC
+        LIMIT $1
+      `;
+
+      const result = await conn.query(sql, [limit]);
+      conn.release();
+      return result.rows;
+    } catch (error) {
+      throw new Error(`Could not get top products. Error: ${error}`);
+    }
+  }
 }

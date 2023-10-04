@@ -121,4 +121,11 @@ describe('Product Model', () => {
       );
     }
   });
+  it('should have a topProducts method', () => {
+    expect(store.topProducts).toBeDefined();
+  });
+  it('topProducts method should return a list of products', async () => {
+    const result = await store.topProducts();
+    expect(result).toEqual([]);
+  });
 });
