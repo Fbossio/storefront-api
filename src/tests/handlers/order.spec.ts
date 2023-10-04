@@ -7,6 +7,11 @@ const restartTable = async () => {
     await client.query('ALTER SEQUENCE orders_id_seq RESTART WITH 1');
 }
 
+const restartTableOrderDetails = async () => {
+    await client.query("TRUNCATE order_details CASCADE");
+    await client.query("ALTER SEQUENCE order_details_id_seq RESTART WITH 1");
+}
+
 const getToken = async () => {
     const createdUser = await request(server)
         .post('/signup')
@@ -35,6 +40,7 @@ describe ('Order handler', () => {
 
     beforeEach(async () => {
         await restartTable();
+        await restartTableOrderDetails();
     });
 
     it('should return a list of orders', async () => {
@@ -110,5 +116,80 @@ describe ('Order handler', () => {
             });
         expect(response.status).toEqual(200);
         expect(response.body.status).toEqual('completed');
+    });
+    it('should add a product to an order', async () => {
+        const createdOrder = await request(server)
+            .post('/orders')
+            .set('Authorization', token)
+            .send({
+                status: 'active',
+            });
+        const response = await request(server)
+            .post(`/orders/${createdOrder.body.id}/products`)
+            .set('Authorization', token)
+            .send({
+                productId: 1,
+                quantity: 1,
+            });
+        expect(response.status).toEqual(200);
+        expect(response.body.quantity).toEqual(1);
+    });
+    it('should show a product from an order', async () => {
+        const createdOrder = await request(server)
+            .post('/orders')
+            .set('Authorization', token)
+            .send({
+                status: 'active',
+            });
+        await request(server)
+            .post(`/orders/${createdOrder.body.id}/products`)
+            .set('Authorization', token)
+            .send({
+                productId: 1,
+                quantity: 1,
+            });
+        const response = await request(server)
+            .get(`/orders/${createdOrder.body.id}/products`)
+            .set('Authorization', token)        
+        expect(response.status).toEqual(200);
+        expect(response.body.order_id).toEqual(createdOrder.body.id);
+        expect(response.body.quantity).toEqual(1);
+        expect(response.body.product_id).toEqual(1);
+    });
+    it('should throw an error if product is not found in an order', async () => {        
+        const response = await request(server)
+            .get('/orders/1/products')
+            .set('Authorization', token)        
+        expect(response.status).toEqual(400);
+        expect(response.body.error).toEqual('Order not found');
+    });
+    it('should delete a product from an order', async () => {
+        const createdOrder = await request(server)
+            .post('/orders')
+            .set('Authorization', token)
+            .send({
+                status: 'active',
+            });
+        await request(server)
+            .post(`/orders/${createdOrder.body.id}/products`)
+            .set('Authorization', token)
+            .send({
+                productId: 1,
+                quantity: 1,
+            });
+        const response = await request(server)
+            .delete(`/orders/${createdOrder.body.id}/products`)
+            .set('Authorization', token)        
+        expect(response.status).toEqual(200);
+        expect(response.body.order_id).toEqual(createdOrder.body.id);
+        expect(response.body.quantity).toEqual(1);
+        expect(response.body.product_id).toEqual(1);
+    });
+    it('should throw an error if product is not deleted from an order', async () => {        
+        const response = await request(server)
+            .delete('/orders/1/products')
+            .set('Authorization', token)        
+        expect(response.status).toEqual(400);
+        expect(response.body.error).toEqual('Product not deleted from order');
     });
 });
