@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
+import verifyToken from '../middleware/auth';
 import { UserStore } from '../models/user';
 
 const store = new UserStore();
@@ -30,6 +31,17 @@ const signIn = async (req: Request, res: Response) => {
   res.json(token);
 };
 
+const create = async (req: Request, res: Response) => {
+  const user = {
+    firstname: req.body.firstname,
+    lastname: req.body.lastname,
+    email: req.body.email,
+    password: req.body.password,
+  };
+  const newUser = await store.create(user);
+  res.json(newUser);
+};
+
 const show = async (req: Request, res: Response) => {
   const user = await store.show(req.params.id);
   if (!user) {
@@ -42,7 +54,8 @@ const show = async (req: Request, res: Response) => {
 const userRoutes = (app: express.Application) => {
   app.post('/signup', signUp);
   app.post('/signin', signIn);
-  app.get('/users/:id', show);
+  app.post('/users', verifyToken, create);
+  app.get('/users/:id', verifyToken, show);
 };
 
 export default userRoutes;
