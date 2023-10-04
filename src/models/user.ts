@@ -7,6 +7,7 @@ export interface IUser {
   lastname: string;
   email: string;
   password: string;
+  lastPurchasedProducts?: string[];
 }
 
 export interface IUpdateUser {
@@ -15,6 +16,7 @@ export interface IUpdateUser {
   lastname?: string;
   email?: string;
   password?: string;
+  lastPurchasedProducts?: string[];
 }
 
 export class UserStore {
@@ -78,12 +80,33 @@ export class UserStore {
   async show(id: string): Promise<IUser> {
     try {
       const conn = await client.connect();
-      const sql = 'SELECT * FROM users WHERE id=($1)';
-      const result = await conn.query(sql, [id]);
+      const userSql = 'SELECT * FROM users WHERE id=($1)';
+      const userResult = await conn.query(userSql, [id]);
+      if (userResult.rows.length === 0) {
+        throw new Error(
+          `Could not find user ${id}. Error: Query result is empty`,
+        );
+      }
+      const user = userResult.rows[0];
+
+      const productsSql = `
+      SELECT p.name
+      FROM products p
+      JOIN order_details od ON p.id = od.product_id
+      JOIN orders o ON od.order_id = o.id
+      WHERE o.user_id = $1
+      ORDER BY o.id DESC
+      LIMIT 5;
+    `;
+      const productsResult = await conn.query(productsSql, [id]);
+
+      const products = productsResult.rows.map((row) => row.name);
+
+      user.lastPurchasedProducts = products;
       conn.release();
-      return result.rows[0];
+      return user;
     } catch (error) {
-      throw new Error(`Could not find user ${id}. Error: ${error}`);
+      throw error;
     }
   }
 

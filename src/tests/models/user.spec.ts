@@ -1,7 +1,12 @@
 import client from '../../config/database';
+import { IOrderDetail, OrderStore } from '../../models/order';
+import { ProductStore } from '../../models/product';
 import { UserStore } from '../../models/user';
 
+
 const store = new UserStore();
+const productStore = new ProductStore();
+const orderStore = new OrderStore();
 
 const restartTable = async () => {
   await client.query('TRUNCATE users CASCADE');
@@ -70,12 +75,46 @@ describe('User Model', () => {
         })
         const result = await store.show(createdUser.id!.toString());
         expect(result.id).toBe(createdUser.id);
+        expect(result.firstname).toBe('test');
+        expect(result.lastname).toBe('test');
+        expect(result.lastPurchasedProducts).toBeDefined();
+        expect(result.lastPurchasedProducts).toEqual([]);
     });
+    it('method show should return the correct user with lastPurchasedProducts', async () => {
+        const createdUser = await store.create({
+            firstname: 'test',
+            lastname: 'test',
+            email: 'test@test.com',
+            password: 'test'
+        })
+        const createdProduct = await productStore.create({
+            name: 'test',
+            price: 10,
+            category: 'test'
+        });
+        const createdOrder = await orderStore.create({
+            user_id: createdUser.id!,
+            status: 'active'
+        });
+
+        const orderDetailObj = {
+            order_id: createdOrder.id,
+            product_id: createdProduct.id,
+            quantity: 1
+        }
+
+        await orderStore.addProduct(orderDetailObj as unknown as IOrderDetail);
+        const result = await store.show(createdUser.id!.toString());
+        expect(result.id).toBe(createdUser.id);
+        expect(result.lastPurchasedProducts).toBeDefined();
+        expect(result.lastPurchasedProducts).toEqual(['test']);
+    });
+
     it('method show should throw an error if the user is not found', async () => {
         try {
             await store.show('1');
         } catch (error) {
-            expect(error).toEqual(new Error(`Could not find user 1. Error: Error: Query result is empty`))
+            expect(error).toEqual(new Error(`Could not find user 1. Error: Query result is empty`))
         }
     });
 

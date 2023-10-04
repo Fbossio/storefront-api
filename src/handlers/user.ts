@@ -30,9 +30,19 @@ const signIn = async (req: Request, res: Response) => {
   res.json(token);
 };
 
+const show = async (req: Request, res: Response) => {
+  const user = await store.show(req.params.id);
+  if (!user) {
+    res.status(400).json({ error: 'User not found' });
+    return;
+  }
+  res.json(user);
+};
+
 const userRoutes = (app: express.Application) => {
   app.post('/signup', signUp);
   app.post('/signin', signIn);
+  app.get('/users/:id', show);
 };
 
 export default userRoutes;
