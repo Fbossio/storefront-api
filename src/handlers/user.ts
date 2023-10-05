@@ -52,9 +52,137 @@ const show = async (req: Request, res: Response) => {
 };
 
 const userRoutes = (app: express.Application) => {
+  /**
+   * @swagger
+   * /signup:
+   *   post:
+   *     summary: Sign up a new user
+   *     tags: [Users]
+   *     security: []
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             properties:
+   *               firstname:
+   *                 type: string
+   *                 example: test
+   *               lastname:
+   *                 type: string
+   *                 example: user
+   *               email:
+   *                 type: string
+   *                 example: test@user.com
+   *               password:
+   *                 type: string
+   *                 example: password
+   *     responses:
+   *       200:
+   *         description: Returns a JWT token
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 token:
+   *                   type: string
+   *       400:
+   *         description: User not created
+   */
   app.post('/signup', signUp);
+
+  /**
+   * @swagger
+   * /signin:
+   *   post:
+   *     summary: Sign in a user
+   *     tags: [Users]
+   *     security: []
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             properties:
+   *               email:
+   *                 type: string
+   *                 example: test@user.com
+   *               password:
+   *                 type: string
+   *                 example: password
+   *     responses:
+   *       200:
+   *         description: Returns a JWT token
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 token:
+   *                   type: string
+   *       401:
+   *         description: Unauthorized
+   */
   app.post('/signin', signIn);
+
+  /**
+   * @swagger
+   * /users:
+   *   post:
+   *     summary: Create a new user
+   *     tags: [Users]
+   *     security:
+   *       - bearerAuth: []
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             properties:
+   *               firstname:
+   *                 type: string
+   *                 example: test2
+   *               lastname:
+   *                 type: string
+   *                 example: user2
+   *               email:
+   *                 type: string
+   *                 example: test2@user.com
+   *               password:
+   *                 type: string
+   *                 example: password
+   *     responses:
+   *       200:
+   *         description: Returns the created user
+   */
   app.post('/users', verifyToken, create);
+
+  /**
+   * @swagger
+   * /users/{id}:
+   *   get:
+   *     summary: Retrieve a user by ID
+   *     tags: [Users]
+   *     security:
+   *       - bearerAuth: []
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         schema:
+   *           type: string
+   *           example: 1
+   *         required: true
+   *         description: User ID
+   *     responses:
+   *       200:
+   *         description: Returns the user details
+   *       400:
+   *         description: User not found
+   */
   app.get('/users/:id', verifyToken, show);
 };
 

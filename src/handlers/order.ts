@@ -107,13 +107,212 @@ const deleteProduct = async (req: Request, res: Response) => {
 };
 
 const orderRoutes = (app: express.Application) => {
+  /**
+   * @swagger
+   * /orders:
+   *   get:
+   *     summary: Retrieve a list of orders
+   *     tags: [Orders]
+   *     security:
+   *       - bearerAuth: []
+   *     responses:
+   *       200:
+   *         description: List of orders
+   *       400:
+   *         description: Orders not found
+   */
   app.get('/orders', verifyToken, index);
+
+  /**
+   * @swagger
+   * /orders/{id}:
+   *   get:
+   *     summary: Retrieve a specific order by ID
+   *     tags: [Orders]
+   *     security:
+   *       - bearerAuth: []
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         schema:
+   *           type: string
+   *           example: 1
+   *         required: true
+   *         description: Order ID
+   *     responses:
+   *       200:
+   *         description: Order details
+   *       400:
+   *         description: Order not found
+   */
   app.get('/orders/:id', verifyToken, show);
+
+  /**
+   * @swagger
+   * /orders:
+   *   post:
+   *     summary: Create a new order
+   *     tags: [Orders]
+   *     security:
+   *       - bearerAuth: []
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             properties:
+   *               status:
+   *                 type: string
+   *                 example: open
+   *     responses:
+   *       200:
+   *         description: Returns the created order
+   *       400:
+   *         description: Order not created
+   */
   app.post('/orders', verifyToken, create);
+
+  /**
+   * @swagger
+   * /orders/{id}:
+   *   delete:
+   *     summary: Delete an order by ID
+   *     tags: [Orders]
+   *     security:
+   *       - bearerAuth: []
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         schema:
+   *           type: string
+   *           example: 1
+   *         required: true
+   *         description: Order ID
+   *     responses:
+   *       200:
+   *         description: Returns the deleted order
+   *       400:
+   *         description: Order not deleted
+   */
   app.delete('/orders/:id', verifyToken, destroy);
+
+  /**
+   * @swagger
+   * /orders/{id}:
+   *   put:
+   *     summary: Update an order by ID
+   *     tags: [Orders]
+   *     security:
+   *       - bearerAuth: []
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         schema:
+   *           type: string
+   *           example: 1
+   *         required: true
+   *         description: Order ID
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             properties:
+   *               status:
+   *                 type: string
+   *     responses:
+   *       200:
+   *         description: Returns the updated order
+   *       400:
+   *         description: Order not updated
+   */
   app.put('/orders/:id', verifyToken, update);
+
+  /**
+   * @swagger
+   * /orders/{id}/products:
+   *   post:
+   *     summary: Add a product to an order
+   *     tags: [Orders]
+   *     security:
+   *       - bearerAuth: []
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         schema:
+   *           type: string
+   *           example: 1
+   *         required: true
+   *         description: Order ID
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             properties:
+   *               productId:
+   *                 type: string
+   *                 example: 1
+   *               quantity:
+   *                 type: number
+   *                 example: 2
+   *     responses:
+   *       200:
+   *         description: Returns the added product details
+   *       400:
+   *         description: Product not added to order
+   */
   app.post('/orders/:id/products', verifyToken, addProduct);
+
+  /**
+   * @swagger
+   * /orders/{id}/products:
+   *   get:
+   *     summary: Retrieve products for a specific order
+   *     tags: [Orders]
+   *     security:
+   *       - bearerAuth: []
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         schema:
+   *           type: string
+   *           example: 1
+   *         required: true
+   *         description: Order ID
+   *     responses:
+   *       200:
+   *         description: List of products for the order
+   *       400:
+   *         description: Order not found
+   */
   app.get('/orders/:id/products', verifyToken, showProduct);
+
+  /**
+   * @swagger
+   * /orders/{id}/products:
+   *   delete:
+   *     summary: Remove a product from an order
+   *     tags: [Orders]
+   *     security:
+   *       - bearerAuth: []
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         schema:
+   *           type: string
+   *           example: 1
+   *         required: true
+   *         description: Order ID
+   *     responses:
+   *       200:
+   *         description: Returns the deleted product details from the order
+   *       400:
+   *         description: Product not deleted from order
+   */
   app.delete('/orders/:id/products', verifyToken, deleteProduct);
 };
 

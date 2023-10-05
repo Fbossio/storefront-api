@@ -3,11 +3,15 @@ import jwt from 'jsonwebtoken';
 import AppRequest from '../types/app';
 
 const verifyToken = (req: AppRequest, res: Response, next: NextFunction) => {
-  const token = req.headers.authorization;
+  const authHeader = req.headers.authorization;
 
-  if (!token) {
+  if (!authHeader) {
     return res.status(403).json({ error: 'No token provided.' });
   }
+
+  const token = authHeader.startsWith('Bearer ')
+    ? authHeader.slice(7)
+    : authHeader;
 
   jwt.verify(token, process.env.TOKEN_SECRET as string, (err, decoded) => {
     if (err) {
