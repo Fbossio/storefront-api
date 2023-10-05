@@ -54,37 +54,146 @@ GET /products/:id
 
 ```bash
 # Create a product
+# Token required
 POST /products
+```
+
+```bash
+# Delete a product
+# Token required
+DELETE /products/:id
+```
+
+```bash
+# Update a product
+# Token required
+PUT /products/:id
+```
+
+```bash
+# Get the top five products
+GET /top_products
 ```
 
 ### Users
 
 ```bash
-# Get a list of all users
+# Register a user
+POST /signup
+```
+
+```bash
+# Login a user
+POST /signin
+```
+
+```bash
+# Create a user
 # Token required
-GET /users
+POST /users
 ```
 
 ```bash
 # Get the details of a user
 # Token required
-GET /products/:id
+GET /users/:id
 ```
 
-```bash
-# Create a user
-POST /products
-```
+
 
 ### Orders
 
 ```bash
-# Create a 
-# Get current order from a user
-GET /orders/:user_id
+# Get a list of orders
+# Token required
+GET /orders
 ```
+
+```bash
+# Get an order
+# Token required
+GET /orders/:id
+```
+
+```bash
+# Create an order
+# Token required
+POST /orders
+```
+
+```bash
+# Delete an order
+# Token required
+DELETE /orders/:id
+```
+
+```bash
+# Change the status of an order
+# Token required
+PUT /orders/:id
+```
+
+```bash
+# Add a product to an order
+# Token required
+POST /orders/:id/products
+```
+
+```bash
+# Get the products of a specific order
+# Token required
+GET /orders/:id/products
+```
+
+```bash
+# Delete a product from an order
+# Token required
+DELETE /orders/:id/products
+```
+
 
 ## Database Design
 
 ![Database Design](./assets/storefront_DB.svg)
 
+The database design comprises four main entities: **Product**, **User**, **Order**, and **Order_Details**. Below is a detailed explanation of each entity and the relationships between them:
+
+1. **Product Entity**
+- **Attributes**:
+    - **id** (Primary Key): An integer that uniquely identifies each product.
+    - **name**: A varchar type indicating the name of the product.
+    - **price**: A float type representing the price of the product.
+    - **category**:  A varchar type that describes the category to which the product belongs.
+
+This entity is responsible for maintaining all the details related to the products available in the system.
+
+2. **User Entity**
+- **Attributes**:
+    - **id** (Primary Key): An integer that uniquely identifies each user.
+    - **firstname**: A varchar type indicating the user's first name.
+    - **lastname**: A varchar type representing the user's last name.
+    - **email**: A varchar type detailing the user's email address.
+    - **password**: A varchar type for storing the user's password.
+
+This entity holds all the information pertaining to registered users of the system.
+
+3. **Order Entity**
+- **Attributes**:
+    - **id** (Primary Key): An integer that uniquely identifies each order.
+    - **status**: A varchar type representing the current status of the order.
+    - **user_id** (Foreign Key): An integer that references the id from the **User** entity.
+
+This entity tracks all orders made by users. Each order is associated with one user through the **user_id** foreign key.
+
+4. **Order_Details Entity**
+- **Attributes**:
+    - **id** (Primary Key): An integer that uniquely identifies each order detail.
+    - **quantity**: An integer indicating the number of items for a particular product in the order.
+    - **product_id** (Foreign Key): An integer that references the id from the **Product** entity.
+    - **order_id** (Foreign Key): An integer that references the id from the **Order** entity.
+
+This entity represents the details of an order, including which products were ordered and in what quantity. Each order detail is linked to both a product and an order.
+
+**Relationships**
+    - The **Order** entity and **User** entity are connected through a one-to-many relationship via the *user_id* foreign key. One user can place multiple orders, but each order is associated with only one user.
+    - The **Order_Details** entity bridges the **Product** and **Order** entities. It has a many-to-one relationship with both entities via the *product_id* and *order_id* foreign keys. This means that each order can have multiple products, and each product can be part of multiple orders, with quantities specified in the **Order_Details** entity.
