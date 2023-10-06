@@ -24,11 +24,17 @@ Follow these steps to get the service up and running:
 git clone https://github.com/Fbossio/storefront-api.git
 ```
 
-#### 1.2 Rename the Configuration File
+#### 1.2 Install Dependencies
+
+```bash
+npm install
+```
+
+#### 1.3 Rename the Configuration File
 
 Navigate to the project root and rename the 'example.env' file to '.env'.
 
-#### 1.3 Check Port Availability
+#### 1.4 Check Port Availability
 
 Ensure that ports 5432 and 5433 are available on your system.
 
