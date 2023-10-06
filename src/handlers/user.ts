@@ -6,58 +6,81 @@ import { UserStore } from '../models/user';
 const store = new UserStore();
 
 const signUp = async (req: Request, res: Response) => {
-  const user = {
-    firstname: req.body.firstname,
-    lastname: req.body.lastname,
-    email: req.body.email,
-    password: req.body.password,
-  };
-  const newUser = await store.create(user);
-  if (!newUser) {
-    res.status(400).json({ error: 'User not created' });
-    return;
+  try {
+    const user = {
+      firstname: req.body.firstname,
+      lastname: req.body.lastname,
+      email: req.body.email,
+      password: req.body.password,
+    };
+    const newUser = await store.create(user);
+    if (!newUser) {
+      res.status(400).json({ error: 'User not created' });
+      return;
+    }
+    const token = jwt.sign(
+      { user: newUser },
+      process.env.TOKEN_SECRET as string,
+    );
+    res.json(token);
+  } catch (error) {
+    throw new Error(`Error signing up user: ${error}`);
   }
-  const token = jwt.sign({ user: newUser }, process.env.TOKEN_SECRET as string);
-  res.json(token);
 };
 
 const signIn = async (req: Request, res: Response) => {
-  const user = await store.authenticate(req.body.email, req.body.password);
-  if (!user) {
-    res.status(401).json({ error: 'Unauthorized' });
-    return;
+  try {
+    const user = await store.authenticate(req.body.email, req.body.password);
+    if (!user) {
+      res.status(401).json({ error: 'Unauthorized' });
+      return;
+    }
+    const token = jwt.sign({ user }, process.env.TOKEN_SECRET as string);
+    res.json(token);
+  } catch (error) {
+    throw new Error(`Error signing in user: ${error}`);
   }
-  const token = jwt.sign({ user }, process.env.TOKEN_SECRET as string);
-  res.json(token);
 };
 
 const create = async (req: Request, res: Response) => {
-  const user = {
-    firstname: req.body.firstname,
-    lastname: req.body.lastname,
-    email: req.body.email,
-    password: req.body.password,
-  };
-  const newUser = await store.create(user);
-  res.json(newUser);
+  try {
+    const user = {
+      firstname: req.body.firstname,
+      lastname: req.body.lastname,
+      email: req.body.email,
+      password: req.body.password,
+    };
+    const newUser = await store.create(user);
+    res.json(newUser);
+  } catch (error) {
+    throw new Error(`Error creating user: ${error}`);
+  }
 };
 
 const index = async (_req: Request, res: Response) => {
-  const users = await store.index();
-  if (!users) {
-    res.status(400).json({ error: 'Users not found' });
-    return;
+  try {
+    const users = await store.index();
+    if (!users) {
+      res.status(400).json({ error: 'Users not found' });
+      return;
+    }
+    res.json(users);
+  } catch (error) {
+    throw new Error(`Error fetching users: ${error}`);
   }
-  res.json(users);
 };
 
 const show = async (req: Request, res: Response) => {
-  const user = await store.show(req.params.id);
-  if (!user) {
-    res.status(400).json({ error: 'User not found' });
-    return;
+  try {
+    const user = await store.show(req.params.id);
+    if (!user) {
+      res.status(400).json({ error: 'User not found' });
+      return;
+    }
+    res.json(user);
+  } catch (error) {
+    throw new Error(`Error fetching user: ${error}`);
   }
-  res.json(user);
 };
 
 const userRoutes = (app: express.Application) => {
