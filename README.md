@@ -1,54 +1,105 @@
-# Storefront Backend Project
+# Storefront API
+
+Storefront API is a service designed to support the basic operations of e-commerce. It allows users to create an account, sign in, and add products to their shopping cart. The API is crafted using `Express` and `TypeScript`, while the automated tests rely on `Jasmine`.
+
+## Prerequisites
+- Docker
+- Ensure ports 5432 and 5433 are available on your system.
+
+## Technical Overview
+
+- **Backend Framework**: Express.js
+- **Programming Language**: TypeScript
+- **Automated Testing**: Jasmine
 
 ## Getting Started
 
-This repo contains a basic Node and Express app to get you started in constructing an API. To get started, clone this repo and run `yarn` in your terminal at the project root.
+Follow these steps to get the service up and running:
 
-## Required Technologies
-Your application must make use of the following libraries:
-- Postgres for the database
-- Node/Express for the application logic
-- dotenv from npm for managing environment variables
-- db-migrate from npm for migrations
-- jsonwebtoken from npm for working with JWTs
-- jasmine from npm for testing
+### I. Preliminary Setup
 
-## Steps to Completion
+#### 1.1 Clone the Repository
 
-### 1. Plan to Meet Requirements
+```bash
+git clone https://github.com/Fbossio/storefront-api.git
+```
 
-In this repo there is a `REQUIREMENTS.md` document which outlines what this API needs to supply for the frontend, as well as the agreed upon data shapes to be passed between front and backend. This is much like a document you might come across in real life when building or extending an API. 
+#### 1.2 Rename the Configuration File
 
-Your first task is to read the requirements and update the document with the following:
-- Determine the RESTful route for each endpoint listed. Add the RESTful route and HTTP verb to the document so that the frontend developer can begin to build their fetch requests.    
-**Example**: A SHOW route: 'blogs/:id' [GET] 
+Navigate to the project root and rename the 'example.env' file to '.env'.
 
-- Design the Postgres database tables based off the data shape requirements. Add to the requirements document the database tables and columns being sure to mark foreign keys.   
-**Example**: You can format this however you like but these types of information should be provided
-Table: Books (id:varchar, title:varchar, author:varchar, published_year:varchar, publisher_id:string[foreign key to publishers table], pages:number)
+#### 1.3 Check Port Availability
 
-**NOTE** It is important to remember that there might not be a one to one ratio between data shapes and database tables. Data shapes only outline the structure of objects being passed between frontend and API, the database may need multiple tables to store a single shape. 
+Ensure that ports 5432 and 5433 are available on your system.
 
-### 2.  DB Creation and Migrations
 
-Now that you have the structure of the databse outlined, it is time to create the database and migrations. Add the npm packages dotenv and db-migrate that we used in the course and setup your Postgres database. If you get stuck, you can always revisit the database lesson for a reminder. 
+### II. Running Automated Tests
 
-You must also ensure that any sensitive information is hashed with bcrypt. If any passwords are found in plain text in your application it will not pass.
+#### 2.1 Start the Test Database Container
 
-### 3. Models
+```bash
+docker compose -f docker-compose.test.yml up
+```
+#### 2.2 Execute the Tests
 
-Create the models for each database table. The methods in each model should map to the endpoints in `REQUIREMENTS.md`. Remember that these models should all have test suites and mocks.
+Once the container is fully up, open another terminal at the project root and execute:
 
-### 4. Express Handlers
+```bash
+npm run test
+```
 
-Set up the Express handlers to route incoming requests to the correct model method. Make sure that the endpoints you create match up with the enpoints listed in `REQUIREMENTS.md`. Endpoints must have tests and be CORS enabled. 
+### III. Running the Service in Development Mode
 
-### 5. JWTs
+#### 3.1 Start the Development Database Container
 
-Add JWT functionality as shown in the course. Make sure that JWTs are required for the routes listed in `REQUIUREMENTS.md`.
+```bash
+docker compose -f docker-compose.yml up
+```
 
-### 6. QA and `README.md`
+#### 3.2 Launch the Service
 
-Before submitting, make sure that your project is complete with a `README.md`. Your `README.md` must include instructions for setting up and running your project including how you setup, run, and connect to your database. 
+After the container is fully initialized, open another terminal and run:
 
-Before submitting your project, spin it up and test each endpoint. If each one responds with data that matches the data shapes from the `REQUIREMENTS.md`, it is ready for submission!
+```bash
+npm start
+```
+
+
+## Manual Testing
+
+Once the service is running in development mode, navigate to the following URL where the 'Swagger' UI is hosted:
+
+http://localhost:3000/api-docs
+
+
+To utilize the interface and test all routes, follow these steps:
+
+1. Go to the *Users* section. Select the 'POST /signup' endpoint. Click the *try it out* button.
+
+![sign up try-it-out](./assets/sf-signup-try-it-out.png)
+
+2. You can modify the default values in the 'request body' or leave them as they are. Hit the 'execute' button.
+
+![sign up execute](./assets/sf-signup-execute.png)
+
+3. Navigate to the 'POST /signin' endpoint and sign in with the user you just created. If you retained the default values in the previous step, there's no need to modify them here.
+
+![sign in try-it-out](./assets/sf-signin-try-it-out.png)
+
+4. Click the 'execute' button.
+
+![sign in execute](./assets/sf-signin-execute.png)
+
+5. The service will return a 'JsonWebToken'. Copy it, excluding the quotation marks.
+
+![sign in jwt](./assets/sf-signin-jwt.png)
+
+6. Click the *Authorize* button at the top right corner.
+
+![authorize](./assets/sf-authorize.png)
+
+7. In the popup window, paste the 'JsonWebToken' and hit *Authorize*.
+
+![autorize pop-up](./assets/sf-authorize-pop-up.png)
+
+8. This will enable you to send requests to all protected endpoints.
