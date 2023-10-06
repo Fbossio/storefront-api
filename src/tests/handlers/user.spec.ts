@@ -104,5 +104,13 @@ describe('User handler', () => {
         expect(response.status).toEqual(200);
         expect(response.body.firstname).toEqual('test');
         expect(response.body.lastname).toEqual('test');
-    })        
+    })
+    it('should return a list of users', async () => {
+        const response = await request(server)
+            .get('/users')
+            .set('Authorization', token)
+            .send();
+        expect(response.status).toEqual(200);
+        expect(response.body).toBeInstanceOf(Array);
+    });            
 });

@@ -42,6 +42,15 @@ const create = async (req: Request, res: Response) => {
   res.json(newUser);
 };
 
+const index = async (_req: Request, res: Response) => {
+  const users = await store.index();
+  if (!users) {
+    res.status(400).json({ error: 'Users not found' });
+    return;
+  }
+  res.json(users);
+};
+
 const show = async (req: Request, res: Response) => {
   const user = await store.show(req.params.id);
   if (!user) {
@@ -160,6 +169,44 @@ const userRoutes = (app: express.Application) => {
    *         description: Returns the created user
    */
   app.post('/users', verifyToken, create);
+
+  /**
+   * @swagger
+   * /users:
+   *   get:
+   *     summary: Retrieve a list of users
+   *     tags: [Users]
+   *     responses:
+   *       200:
+   *         description: Returns a list of users
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: array
+   *               items:
+   *                 type: object
+   *                 properties:
+   *                   id:
+   *                     type: string
+   *                   firstname:
+   *                     type: string
+   *                   lastname:
+   *                     type: string
+   *                   email:
+   *                     type: string
+   *                   password:
+   *                     type: string
+   *       400:
+   *         description: Users not found
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 error:
+   *                   type: string
+   */
+  app.get('/users', verifyToken, index);
 
   /**
    * @swagger

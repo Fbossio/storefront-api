@@ -94,6 +94,12 @@ POST /users
 ```
 
 ```bash
+# Get a list of all users
+# Token required
+GET /users
+```
+
+```bash
 # Get the details of a user
 # Token required
 GET /users/:id
