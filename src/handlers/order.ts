@@ -12,98 +12,130 @@ import AppRequest from '../types/app';
 const store = new OrderStore();
 
 const index = async (_req: Request, res: Response) => {
-  const orders = await store.index();
-  if (!orders) {
-    res.status(400).json({ error: 'Orders not found' });
-    return;
+  try {
+    const orders = await store.index();
+    if (!orders) {
+      res.status(400).json({ error: 'Orders not found' });
+      return;
+    }
+    res.json(orders);
+  } catch (error) {
+    throw new Error(`Error fetching orders: ${error}`);
   }
-  res.json(orders);
 };
 
 const show = async (req: Request, res: Response) => {
-  const order = await store.show(req.params.id);
-  if (!order) {
-    res.status(400).json({ error: 'Order not found' });
-    return;
+  try {
+    const order = await store.show(req.params.id);
+    if (!order) {
+      res.status(400).json({ error: 'Order not found' });
+      return;
+    }
+    res.json(order);
+  } catch (error) {
+    throw new Error(`Error fetching order: ${error}`);
   }
-  res.json(order);
 };
 
 const create = async (req: AppRequest, res: Response) => {
-  const user = req.user as { user?: IUser };
-  const order = {
-    status: req.body.status,
-    user_id: user?.user?.id?.toString() || '',
-  };
-  const newOrder = await store.create(order as unknown as IOrder);
-  if (!newOrder) {
-    res.status(400).json({ error: 'Order not created' });
-    return;
+  try {
+    const user = req.user as { user?: IUser };
+    const order = {
+      status: req.body.status,
+      user_id: user?.user?.id?.toString() || '',
+    };
+    const newOrder = await store.create(order as unknown as IOrder);
+    if (!newOrder) {
+      res.status(400).json({ error: 'Order not created' });
+      return;
+    }
+    res.json(newOrder);
+  } catch (error) {
+    throw new Error(`Error creating order: ${error}`);
   }
-  res.json(newOrder);
 };
 
 const destroy = async (req: Request, res: Response) => {
-  const deleted = await store.delete(req.params.id);
-  if (!deleted) {
-    res.status(400).json({ error: 'Order not deleted' });
-    return;
+  try {
+    const deleted = await store.delete(req.params.id);
+    if (!deleted) {
+      res.status(400).json({ error: 'Order not deleted' });
+      return;
+    }
+    res.json(deleted);
+  } catch (error) {
+    throw new Error(`Error deleting order: ${error}`);
   }
-  res.json(deleted);
 };
 
 const update = async (req: Request, res: Response) => {
-  const id = req.params.id;
-  const order = {
-    ...req.body,
-    id,
-  };
-  const updated = await store.update(order as unknown as IUpdateOrder);
-  if (!updated) {
-    res.status(400).json({ error: 'Order not updated' });
-    return;
+  try {
+    const id = req.params.id;
+    const order = {
+      ...req.body,
+      id,
+    };
+    const updated = await store.update(order as unknown as IUpdateOrder);
+    if (!updated) {
+      res.status(400).json({ error: 'Order not updated' });
+      return;
+    }
+    res.json(updated);
+  } catch (error) {
+    throw new Error(`Error updating order: ${error}`);
   }
-  res.json(updated);
 };
 
 const addProduct = async (req: Request, res: Response) => {
-  const orderId = req.params.id;
-  const productId = req.body.productId;
-  const quantity = req.body.quantity;
-  const addProductObject = {
-    order_id: orderId,
-    product_id: productId,
-    quantity,
-  };
+  try {
+    const orderId = req.params.id;
+    const productId = req.body.productId;
+    const quantity = req.body.quantity;
+    const addProductObject = {
+      order_id: orderId,
+      product_id: productId,
+      quantity,
+    };
 
-  const added = await store.addProduct(
-    addProductObject as unknown as IOrderDetail,
-  );
-  if (!added) {
-    res.status(400).json({ error: 'Product not added to order' });
-    return;
+    const added = await store.addProduct(
+      addProductObject as unknown as IOrderDetail,
+    );
+    if (!added) {
+      res.status(400).json({ error: 'Product not added to order' });
+      return;
+    }
+    res.json(added);
+  } catch (error) {
+    throw new Error(`Error adding product to order: ${error}`);
   }
-  res.json(added);
 };
 
 const showProduct = async (req: Request, res: Response) => {
-  const orderId = req.params.id;
-  const order = await store.showOrderDetail(orderId);
-  if (!order) {
-    res.status(400).json({ error: 'Order not found' });
-    return;
+  try {
+    const orderId = req.params.id;
+    const order = await store.showOrderDetail(orderId);
+    if (!order) {
+      res.status(400).json({ error: 'Order not found' });
+      return;
+    }
+    res.json(order);
+  } catch (error) {
+    throw new Error(`Error fetching order: ${error}`);
   }
-  res.json(order);
 };
 
 const deleteProduct = async (req: Request, res: Response) => {
-  const orderId = req.params.id;
-  const deleted = await store.deleteOrderDetail(orderId);
-  if (!deleted) {
-    res.status(400).json({ error: 'Product not deleted from order' });
-    return;
+  try {
+    const orderId = req.params.id;
+    const deleted = await store.deleteOrderDetail(orderId);
+    if (!deleted) {
+      res.status(400).json({ error: 'Product not deleted from order' });
+      return;
+    }
+    res.json(deleted);
+  } catch (error) {
+    throw new Error(`Error deleting product from order: ${error}`);
   }
-  res.json(deleted);
 };
 
 const orderRoutes = (app: express.Application) => {
